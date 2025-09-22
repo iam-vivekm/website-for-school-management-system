@@ -1,3 +1,4 @@
+// Referenced from javascript_log_in_with_replit integration
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -7,13 +8,17 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { AppSidebar } from "@/components/AppSidebar";
+import { useAuth } from "@/hooks/useAuth";
 import Dashboard from "@/pages/Dashboard";
 import Students from "@/pages/Students";
 import Teachers from "@/pages/Teachers";
 import Fees from "@/pages/Fees";
+import Landing from "@/pages/Landing";
 import NotFound from "@/pages/not-found";
+import { Button } from "@/components/ui/button";
+import { LogOut } from "lucide-react";
 
-function Router() {
+function AuthenticatedRouter() {
   return (
     <Switch>
       <Route path="/" component={Dashboard} />
@@ -26,7 +31,43 @@ function Router() {
   );
 }
 
+function Router() {
+  const { isAuthenticated, isLoading } = useAuth();
+
+  return (
+    <Switch>
+      {isLoading || !isAuthenticated ? (
+        <Route path="/" component={Landing} />
+      ) : (
+        <>
+          <Route path="/" component={Dashboard} />
+          <Route path="/students" component={Students} />
+          <Route path="/teachers" component={Teachers} />
+          <Route path="/fees" component={Fees} />
+        </>
+      )}
+      <Route component={NotFound} />
+    </Switch>
+  );
+}
+
 function App() {
+  const { isAuthenticated, isLoading } = useAuth();
+  
+  // Show landing page for non-authenticated users
+  if (isLoading || !isAuthenticated) {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <ThemeProvider>
+            <Router />
+            <Toaster />
+          </ThemeProvider>
+        </TooltipProvider>
+      </QueryClientProvider>
+    );
+  }
+
   // Custom sidebar width for school management application
   const sidebarStyle = {
     "--sidebar-width": "20rem",
@@ -49,10 +90,20 @@ function App() {
                       <p className="text-xs text-muted-foreground">School Management System</p>
                     </div>
                   </div>
-                  <ThemeToggle />
+                  <div className="flex items-center gap-2">
+                    <ThemeToggle />
+                    <Button 
+                      variant="outline" 
+                      size="icon"
+                      onClick={() => window.location.href = '/api/logout'}
+                      data-testid="button-logout"
+                    >
+                      <LogOut className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </header>
                 <main className="flex-1 overflow-auto">
-                  <Router />
+                  <AuthenticatedRouter />
                 </main>
               </div>
             </div>
