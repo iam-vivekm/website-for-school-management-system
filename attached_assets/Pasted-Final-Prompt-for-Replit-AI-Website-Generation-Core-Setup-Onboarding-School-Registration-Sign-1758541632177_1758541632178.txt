@@ -1,0 +1,147 @@
+Final Prompt for Replit AI (Website Generation)
+
+Core Setup & Onboarding
+
+School Registration & Signup – allow schools to create accounts (custom subdomain or tenant space).
+
+Role-based Access – Admin, Principal, Teacher, Student, Parent.
+
+School Branding – upload logo, set school colors, custom theme.
+
+Class/Section Setup – create grades, sections, subjects.
+
+Teacher & Student Onboarding – bulk import via Excel/CSV or individual entry.
+
+Multi-branch Support – if schools have multiple campuses.
+
+🔹 Student Management
+
+Student profiles (personal info, ID, documents).
+
+Admission & Enrollment process.
+
+Attendance tracking (daily/subject-wise).
+
+Academic performance (marks, grades, GPA).
+
+Behavior & disciplinary records.
+
+Certificates (transfer, bonafide, completion).
+
+🔹 Teacher & Staff Management
+
+Teacher profiles (qualifications, subjects taught).
+
+Attendance & payroll management.
+
+Timetable allocation (class/period scheduling).
+
+Task assignment & performance reports.
+
+🔹 Academics & Curriculum
+
+Timetable management (auto-generate or manual).
+
+Lesson planning & syllabus tracking.
+
+Homework & assignments upload.
+
+Online examinations & grading.
+
+Report cards (custom formats as per school).
+
+Curriculum progress reports.
+
+🔹 Communication & Collaboration
+
+In-app messaging (teacher ↔ parent ↔ student).
+
+Announcements/notice board.
+
+Event calendar (holidays, exams, parent-teacher meetings).
+
+SMS/Email/WhatsApp integration (for notifications).
+
+🔹 Fees & Finance
+
+Fee structure setup (monthly/term-wise/annual).
+
+Online fee payments (UPI, cards, net banking).
+
+Automated receipts.
+
+Pending fee reminders.
+
+Financial reports for admins.
+
+🔹 Library & Inventory
+
+Library catalog management.
+
+Book issue/return tracking.
+
+School assets (projectors, labs, buses) management.
+
+🔹 Transport Management
+
+Bus routes & stops.
+
+Student transport allocation.
+
+Live bus tracking (integration with GPS).
+
+Driver/staff assignment.
+
+🔹 Attendance & Leave
+
+Student attendance (daily/period wise).
+
+Teacher/staff attendance (manual or biometric).
+
+Leave requests & approvals.
+
+🔹 Parent & Student Portal
+
+Student progress dashboard.
+
+Attendance reports.
+
+Exam schedules & report cards.
+
+Fee payment & receipts.
+
+Communication with teachers.
+
+🔹 Analytics & Reports
+
+Attendance trends (students/teachers).
+
+Academic performance insights.
+
+Fee collection reports.
+
+Teacher workload analytics.
+
+Custom reports export (PDF/Excel).
+
+🔹 AI & Automation (Future Ready 🚀)
+
+AI-based timetable generator.
+
+Homework auto-checker (MCQ/essay AI assist).
+
+Predictive analysis (dropout risk, weak students).
+
+Chatbot for parent queries.
+
+Personalized learning recommendations.
+
+🔹 Tech Side (Multi-Tenant SaaS Model)
+
+Each school gets its own isolated data & dashboard.
+
+Super Admin (you) to manage all schools, billing, support.
+
+Subscription model (monthly/yearly per student/teacher).
+
+Role-based permissions & secure data handling.
