@@ -54,8 +54,12 @@ export interface IStorage {
   
   // Student operations
   createStudent(student: InsertStudent): Promise<Student>;
+  createStudentWithUser(data: {
+    userData: UpsertUser;
+    studentData: Omit<InsertStudent, 'userId'>;
+  }): Promise<Student & { user: User }>;
   getStudent(id: string): Promise<Student | undefined>;
-  getStudentsBySchool(schoolId: string): Promise<Student[]>;
+  getStudentsBySchool(schoolId: string): Promise<(Student & { user?: User })[]>;
   getStudentsByGrade(schoolId: string, gradeId: string): Promise<Student[]>;
   updateStudent(id: string, student: Partial<InsertStudent>): Promise<Student>;
   deleteStudent(id: string): Promise<void>;
@@ -153,8 +157,56 @@ export class DatabaseStorage implements IStorage {
 
   // Student operations
   async createStudent(studentData: InsertStudent): Promise<Student> {
-    const [student] = await db.insert(students).values(studentData).returning();
-    return student;
+    const result = await db.insert(students).values(studentData).returning();
+    return result[0] as Student;
+  }
+
+  async createStudentWithUser(data: {
+    userData: UpsertUser;
+    studentData: Omit<InsertStudent, 'userId'>;
+  }): Promise<Student & { user: User }> {
+    return await db.transaction(async (tx) => {
+      // Check for existing user with same email in the same school
+      const existingUser = await tx
+        .select()
+        .from(users)
+        .where(and(
+          eq(users.email, data.userData.email),
+          eq(users.schoolId, data.userData.schoolId!)
+        ))
+        .limit(1);
+
+      if (existingUser.length > 0) {
+        throw new Error(`A user with email ${data.userData.email} already exists in this school`);
+      }
+
+      // Generate a unique user ID for the student
+      const studentUserId = `student_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      
+      // Create user first
+      const userResult = await tx
+        .insert(users)
+        .values({
+          ...data.userData,
+          id: studentUserId,
+        })
+        .returning();
+      
+      const user = userResult[0] as User;
+      
+      // Create student record
+      const studentResult = await tx
+        .insert(students)
+        .values({
+          ...data.studentData,
+          userId: user.id,
+        })
+        .returning();
+      
+      const student = studentResult[0] as Student;
+      
+      return { ...student, user };
+    });
   }
 
   async getStudent(id: string): Promise<Student | undefined> {
@@ -162,12 +214,21 @@ export class DatabaseStorage implements IStorage {
     return student;
   }
 
-  async getStudentsBySchool(schoolId: string): Promise<Student[]> {
-    return await db
-      .select()
+  async getStudentsBySchool(schoolId: string): Promise<(Student & { user?: User })[]> {
+    const result = await db
+      .select({
+        student: students,
+        user: users
+      })
       .from(students)
+      .leftJoin(users, eq(students.userId, users.id))
       .where(and(eq(students.schoolId, schoolId), eq(students.isActive, true)))
       .orderBy(asc(students.studentId));
+    
+    return result.map(row => ({
+      ...row.student,
+      user: row.user || undefined
+    }));
   }
 
   async getStudentsByGrade(schoolId: string, gradeId: string): Promise<Student[]> {

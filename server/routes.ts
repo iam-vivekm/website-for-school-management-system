@@ -46,17 +46,72 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const userId = req.user.claims.sub;
       const user = req.currentUser || await storage.getUser(userId);
-      const studentData = insertStudentSchema.parse({
-        ...req.body,
-        schoolId: user.schoolId
+      
+      // Create validation schema for student+user creation
+      const createStudentSchema = z.object({
+        firstName: z.string().min(1, "First name is required"),
+        lastName: z.string().min(1, "Last name is required"),
+        email: z.string().email("Please enter a valid email"),
+        studentId: z.string().min(1, "Student ID is required"),
+        gradeId: z.string().optional(),
+        sectionId: z.string().optional(),
+        dateOfBirth: z.string().optional(),
+        gender: z.string().optional(),
+        address: z.string().optional(),
+        parentName: z.string().optional(),
+        parentEmail: z.string().email().optional().or(z.literal("")),
+        parentPhone: z.string().optional(),
+        bloodGroup: z.string().optional(),
+        medicalInfo: z.string().optional(),
       });
       
-      const student = await storage.createStudent(studentData);
+      const validatedData = createStudentSchema.parse(req.body);
+      const {
+        firstName,
+        lastName,
+        email,
+        studentId,
+        gradeId,
+        sectionId,
+        dateOfBirth,
+        gender,
+        address,
+        parentName,
+        parentEmail,
+        parentPhone,
+        bloodGroup,
+        medicalInfo,
+      } = validatedData;
+      
+      const student = await storage.createStudentWithUser({
+        userData: {
+          firstName,
+          lastName,
+          email,
+          role: 'student',
+          schoolId: user.schoolId,
+        },
+        studentData: {
+          studentId,
+          gradeId,
+          sectionId,
+          rollNumber,
+          dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : undefined,
+          gender,
+          address,
+          phoneNumber,
+          emergencyContact: parentName,
+          parentEmail: parentEmail || undefined,
+          parentPhone: parentPhone || undefined,
+          bloodGroup,
+          medicalInfo,
+          schoolId: user.schoolId,
+          isActive: true,
+        },
+      });
+      
       res.json(student);
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid data", errors: error.errors });
-      }
       console.error("Error creating student:", error);
       res.status(500).json({ message: "Failed to create student" });
     }
