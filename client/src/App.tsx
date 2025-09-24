@@ -1,7 +1,5 @@
 // Referenced from javascript_log_in_with_replit integration
 import { Switch, Route } from "wouter";
-import { queryClient } from "./lib/queryClient";
-import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -57,14 +55,12 @@ function App() {
   // Show landing page for non-authenticated users
   if (isLoading || !isAuthenticated) {
     return (
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <ThemeProvider>
-            <Router />
-            <Toaster />
-          </ThemeProvider>
-        </TooltipProvider>
-      </QueryClientProvider>
+      <TooltipProvider>
+        <ThemeProvider>
+          <Router />
+          <Toaster />
+        </ThemeProvider>
+      </TooltipProvider>
     );
   }
 
@@ -75,43 +71,41 @@ function App() {
   };
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <ThemeProvider>
-          <SidebarProvider style={sidebarStyle as React.CSSProperties}>
-            <div className="flex h-screen w-full">
-              <AppSidebar />
-              <div className="flex flex-col flex-1">
-                <header className="flex items-center justify-between p-4 border-b bg-background">
-                  <div className="flex items-center gap-4">
-                    <SidebarTrigger data-testid="button-sidebar-toggle" />
-                    <div className="hidden md:block">
-                      <h2 className="text-lg font-semibold">EduConnect</h2>
-                      <p className="text-xs text-muted-foreground">School Management System</p>
-                    </div>
+    <TooltipProvider>
+      <ThemeProvider>
+        <SidebarProvider style={sidebarStyle as React.CSSProperties}>
+          <div className="flex h-screen w-full">
+            <AppSidebar />
+            <div className="flex flex-col flex-1">
+              <header className="flex items-center justify-between p-4 border-b bg-background">
+                <div className="flex items-center gap-4">
+                  <SidebarTrigger data-testid="button-sidebar-toggle" />
+                  <div className="hidden md:block">
+                    <h2 className="text-lg font-semibold">EduConnect</h2>
+                    <p className="text-xs text-muted-foreground">School Management System</p>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <ThemeToggle />
-                    <Button 
-                      variant="outline" 
-                      size="icon"
-                      onClick={() => window.location.href = '/api/logout'}
-                      data-testid="button-logout"
-                    >
-                      <LogOut className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </header>
-                <main className="flex-1 overflow-auto">
-                  <AuthenticatedRouter />
-                </main>
-              </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <ThemeToggle />
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => window.location.href = '/api/logout'}
+                    data-testid="button-logout"
+                  >
+                    <LogOut className="h-4 w-4" />
+                  </Button>
+                </div>
+              </header>
+              <main className="flex-1 overflow-auto">
+                <AuthenticatedRouter />
+              </main>
             </div>
-            <Toaster />
-          </SidebarProvider>
-        </ThemeProvider>
-      </TooltipProvider>
-    </QueryClientProvider>
+          </div>
+          <Toaster />
+        </SidebarProvider>
+      </ThemeProvider>
+    </TooltipProvider>
   );
 }
 
