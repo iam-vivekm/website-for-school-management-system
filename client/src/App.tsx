@@ -11,6 +11,7 @@ import Dashboard from "@/pages/Dashboard";
 import Students from "@/pages/Students";
 import Teachers from "@/pages/Teachers";
 import Fees from "@/pages/Fees";
+import Admission from "@/pages/Admission";
 import Landing from "@/pages/Landing";
 import NotFound from "@/pages/not-found";
 import { Button } from "@/components/ui/button";
@@ -20,6 +21,7 @@ function AuthenticatedRouter() {
   return (
     <Switch>
       <Route path="/" component={Dashboard} />
+      <Route path="/admission" component={Admission} />
       <Route path="/students" component={Students} />
       <Route path="/teachers" component={Teachers} />
       <Route path="/fees" component={Fees} />
@@ -39,6 +41,7 @@ function Router() {
       ) : (
         <>
           <Route path="/" component={Dashboard} />
+          <Route path="/admission" component={Admission} />
           <Route path="/students" component={Students} />
           <Route path="/teachers" component={Teachers} />
           <Route path="/fees" component={Fees} />

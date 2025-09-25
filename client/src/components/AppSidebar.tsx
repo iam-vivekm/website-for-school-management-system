@@ -1,4 +1,4 @@
-import { BookOpen, Calendar, DollarSign, GraduationCap, Home, MessageSquare, Settings, Users, UserCheck, BarChart3, Bell } from "lucide-react";
+import { BookOpen, Calendar, DollarSign, GraduationCap, Home, MessageSquare, Settings, Users, UserCheck, BarChart3, Bell, FileText } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -28,6 +28,7 @@ interface MenuItem {
 
 const menuItems: MenuItem[] = [
   { title: "Dashboard", url: "/", icon: Home },
+  { title: "Admission", url: "/admission", icon: FileText },
   { title: "Students", url: "/students", icon: GraduationCap },
   { title: "Teachers", url: "/teachers", icon: Users },
   { title: "Classes", url: "/classes", icon: BookOpen },

@@ -45,9 +45,14 @@ export default function Landing() {
             <GraduationCap className="h-8 w-8 text-blue-600" />
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">EduConnect</h1>
           </div>
-          <Button onClick={() => window.location.href = '/api/login'} data-testid="button-login">
-            Sign In
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => window.location.href = '/api/signup'} data-testid="button-signup">
+              Sign Up
+            </Button>
+            <Button onClick={() => window.location.href = '/api/login'} data-testid="button-login">
+              Sign In
+            </Button>
+          </div>
         </div>
       </header>
 
@@ -62,11 +67,11 @@ export default function Landing() {
             Streamline your educational institution with our comprehensive platform for student management, attendance tracking, fee collection, and communication.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" onClick={() => window.location.href = '/api/login'} data-testid="button-get-started">
+            <Button size="lg" onClick={() => window.location.href = '/api/signup'} data-testid="button-get-started">
               Get Started Today
             </Button>
-            <Button variant="outline" size="lg" data-testid="button-learn-more">
-              Learn More
+            <Button variant="outline" size="lg" onClick={() => window.location.href = '/api/login'} data-testid="button-learn-more">
+              Sign In
             </Button>
           </div>
         </div>
@@ -130,7 +135,7 @@ export default function Landing() {
           <p className="text-lg text-gray-600 dark:text-gray-300 mb-8">
             Join thousands of schools that have modernized their management with EduConnect.
           </p>
-          <Button size="lg" onClick={() => window.location.href = '/api/login'} data-testid="button-start-trial">
+          <Button size="lg" onClick={() => window.location.href = '/api/signup'} data-testid="button-start-trial">
             Start Your Free Trial
           </Button>
         </div>
