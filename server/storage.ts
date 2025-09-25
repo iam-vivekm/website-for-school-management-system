@@ -43,6 +43,7 @@ import { eq, and, desc, asc, like, isNull } from "drizzle-orm";
 export interface IStorage {
   // User operations (mandatory for Replit Auth)
   getUser(id: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
   
   // School operations
@@ -123,6 +124,26 @@ export class DatabaseStorage implements IStorage {
       } as User;
     }
     const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    if (process.env.NODE_ENV === 'development' && process.env.REPL_ID === 'local-dev' && email === 'admin@school.com') {
+      // Return mock user for local dev
+      return {
+        id: 'test-user-123',
+        email: 'admin@school.com',
+        firstName: 'Test',
+        lastName: 'Admin',
+        profileImageUrl: null,
+        role: 'super_admin',
+        status: 'active',
+        schoolId: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      } as User;
+    }
+    const [user] = await db.select().from(users).where(eq(users.email, email));
     return user;
   }
 

@@ -1,8 +1,27 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { GraduationCap, Users, BookOpen, BarChart3, DollarSign, Bell } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { GraduationCap, Users, BookOpen, BarChart3, DollarSign, Bell, Eye, EyeOff } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Landing() {
+  const { login, signup, isLoggingIn, isSigningUp } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
+  const [loginData, setLoginData] = useState({ email: '', password: '' });
+  const [signupData, setSignupData] = useState({
+    email: '',
+    password: '',
+    firstName: '',
+    lastName: '',
+    schoolName: '',
+    role: 'school_admin'
+  });
+  const [error, setError] = useState('');
+  const [activeTab, setActiveTab] = useState('login');
   const features = [
     {
       icon: Users,
@@ -46,10 +65,10 @@ export default function Landing() {
             <h1 className="text-2xl font-bold text-gray-900 dark:text-white">EduConnect</h1>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" onClick={() => window.location.href = '/api/signup'} data-testid="button-signup">
+            <Button variant="outline" onClick={() => document.getElementById('auth-section')?.scrollIntoView({ behavior: 'smooth' })} data-testid="button-signup">
               Sign Up
             </Button>
-            <Button onClick={() => window.location.href = '/api/login'} data-testid="button-login">
+            <Button onClick={() => document.getElementById('auth-section')?.scrollIntoView({ behavior: 'smooth' })} data-testid="button-login">
               Sign In
             </Button>
           </div>
@@ -67,10 +86,10 @@ export default function Landing() {
             Streamline your educational institution with our comprehensive platform for student management, attendance tracking, fee collection, and communication.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" onClick={() => window.location.href = '/api/signup'} data-testid="button-get-started">
+            <Button size="lg" onClick={() => document.getElementById('auth-section')?.scrollIntoView({ behavior: 'smooth' })} data-testid="button-get-started">
               Get Started Today
             </Button>
-            <Button variant="outline" size="lg" onClick={() => window.location.href = '/api/login'} data-testid="button-learn-more">
+            <Button variant="outline" size="lg" onClick={() => document.getElementById('auth-section')?.scrollIntoView({ behavior: 'smooth' })} data-testid="button-learn-more">
               Sign In
             </Button>
           </div>
@@ -126,6 +145,168 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Authentication Section */}
+      <section id="auth-section" className="container mx-auto px-4 py-20">
+        <div className="max-w-md mx-auto">
+          <Card>
+            <CardHeader className="text-center">
+              <CardTitle className="text-2xl">Get Started</CardTitle>
+              <CardDescription>
+                Sign up for a new school or sign in to your existing account
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {error && (
+                <Alert className="mb-4" variant="destructive">
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
+
+              <Tabs defaultValue="login" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="login">Sign In</TabsTrigger>
+                  <TabsTrigger value="signup">Sign Up</TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="login" className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="login-email">Email</Label>
+                    <Input
+                      id="login-email"
+                      type="email"
+                      placeholder="Enter your email"
+                      value={loginData.email}
+                      onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
+                      data-testid="input-login-email"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="login-password">Password</Label>
+                    <div className="relative">
+                      <Input
+                        id="login-password"
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Enter your password"
+                        value={loginData.password}
+                        onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
+                        data-testid="input-login-password"
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="absolute right-0 top-0 h-full px-3"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </Button>
+                    </div>
+                  </div>
+                  <Button
+                    className="w-full"
+                    onClick={() => {
+                      setError('');
+                      if (!loginData.email || !loginData.password) {
+                        setError('Please fill in all fields');
+                        return;
+                      }
+                      login(loginData);
+                    }}
+                    disabled={isLoggingIn}
+                    data-testid="button-login-submit"
+                  >
+                    {isLoggingIn ? 'Signing In...' : 'Sign In'}
+                  </Button>
+                </TabsContent>
+
+                <TabsContent value="signup" className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-firstName">First Name</Label>
+                      <Input
+                        id="signup-firstName"
+                        placeholder="First name"
+                        value={signupData.firstName}
+                        onChange={(e) => setSignupData({ ...signupData, firstName: e.target.value })}
+                        data-testid="input-signup-firstname"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-lastName">Last Name</Label>
+                      <Input
+                        id="signup-lastName"
+                        placeholder="Last name"
+                        value={signupData.lastName}
+                        onChange={(e) => setSignupData({ ...signupData, lastName: e.target.value })}
+                        data-testid="input-signup-lastname"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-email">Email</Label>
+                    <Input
+                      id="signup-email"
+                      type="email"
+                      placeholder="Enter your email"
+                      value={signupData.email}
+                      onChange={(e) => setSignupData({ ...signupData, email: e.target.value })}
+                      data-testid="input-signup-email"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-schoolName">School Name</Label>
+                    <Input
+                      id="signup-schoolName"
+                      placeholder="Enter your school name"
+                      value={signupData.schoolName}
+                      onChange={(e) => setSignupData({ ...signupData, schoolName: e.target.value })}
+                      data-testid="input-signup-schoolname"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-password">Password</Label>
+                    <div className="relative">
+                      <Input
+                        id="signup-password"
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Create a password"
+                        value={signupData.password}
+                        onChange={(e) => setSignupData({ ...signupData, password: e.target.value })}
+                        data-testid="input-signup-password"
+                      />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="absolute right-0 top-0 h-full px-3"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </Button>
+                    </div>
+                  </div>
+                  <Button
+                    className="w-full"
+                    onClick={() => {
+                      setError('');
+                      if (!signupData.email || !signupData.password || !signupData.firstName || !signupData.lastName || !signupData.schoolName) {
+                        setError('Please fill in all fields');
+                        return;
+                      }
+                      signup(signupData);
+                    }}
+                    disabled={isSigningUp}
+                    data-testid="button-signup-submit"
+                  >
+                    {isSigningUp ? 'Creating Account...' : 'Create School Account'}
+                  </Button>
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="container mx-auto px-4 py-20 text-center">
         <div className="max-w-2xl mx-auto">
@@ -135,7 +316,7 @@ export default function Landing() {
           <p className="text-lg text-gray-600 dark:text-gray-300 mb-8">
             Join thousands of schools that have modernized their management with EduConnect.
           </p>
-          <Button size="lg" onClick={() => window.location.href = '/api/signup'} data-testid="button-start-trial">
+          <Button size="lg" onClick={() => document.getElementById('auth-section')?.scrollIntoView({ behavior: 'smooth' })} data-testid="button-start-trial">
             Start Your Free Trial
           </Button>
         </div>
