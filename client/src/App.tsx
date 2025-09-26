@@ -13,6 +13,9 @@ import Teachers from "@/pages/Teachers";
 import Fees from "@/pages/Fees";
 import Admission from "@/pages/Admission";
 import Landing from "@/pages/Landing";
+import About from "@/pages/About";
+import Results from "@/pages/Results";
+import Contact from "@/pages/Contact";
 import NotFound from "@/pages/not-found";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
@@ -36,17 +39,23 @@ function Router() {
 
   return (
     <Switch>
-      {isLoading || !isAuthenticated ? (
-        <Route path="/" component={Landing} />
-      ) : (
+      {/* Public routes - accessible without authentication */}
+      <Route path="/" component={Landing} />
+      <Route path="/about" component={About} />
+      <Route path="/admission" component={Admission} />
+      <Route path="/results" component={Results} />
+      <Route path="/contact" component={Contact} />
+
+      {/* Protected routes - require authentication */}
+      {isAuthenticated && (
         <>
-          <Route path="/" component={Dashboard} />
-          <Route path="/admission" component={Admission} />
+          <Route path="/dashboard" component={Dashboard} />
           <Route path="/students" component={Students} />
           <Route path="/teachers" component={Teachers} />
           <Route path="/fees" component={Fees} />
         </>
       )}
+
       <Route component={NotFound} />
     </Switch>
   );

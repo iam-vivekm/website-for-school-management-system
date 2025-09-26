@@ -72,19 +72,23 @@ export function setAuthCookies(res: Response, user: User) {
   const accessToken = generateToken(user);
   const refreshToken = generateRefreshToken(user);
 
-  // Set HttpOnly cookies
+  // Set HttpOnly cookies - relaxed settings for development
+  const isProduction = process.env.NODE_ENV === 'production';
+
   res.cookie('accessToken', accessToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
+    secure: isProduction,
+    sameSite: isProduction ? 'strict' : 'lax', // Use 'lax' for development
     maxAge: 15 * 60 * 1000, // 15 minutes
+    path: '/',
   });
 
   res.cookie('refreshToken', refreshToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
+    secure: isProduction,
+    sameSite: isProduction ? 'strict' : 'lax', // Use 'lax' for development
     maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+    path: '/',
   });
 }
 

@@ -22,6 +22,7 @@ export default function Landing() {
   });
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState('login');
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const features = [
     {
       icon: Users,
