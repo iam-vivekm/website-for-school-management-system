@@ -39,6 +39,7 @@ import {
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, and, desc, asc, like, isNull } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 
 export interface IStorage {
   // User operations (mandatory for Replit Auth)
@@ -238,48 +239,43 @@ export class DatabaseStorage implements IStorage {
     userData: UpsertUser;
     studentData: Omit<InsertStudent, 'userId'>;
   }): Promise<Student & { user: User }> {
-    return await db.transaction(async (tx) => {
-      // Check for existing user with same email in the same school
-      const existingUser = await tx
-        .select()
-        .from(users)
-        .where(and(
-          eq(users.email, data.userData.email),
-          eq(users.schoolId, data.userData.schoolId!)
-        ))
-        .limit(1);
+    // Check for existing user with same email in the same school
+    const existingUser = await db
+      .select()
+      .from(users)
+      .where(and(
+        eq(users.email, data.userData.email),
+        eq(users.schoolId, data.userData.schoolId!)
+      ))
+      .limit(1);
 
-      if (existingUser.length > 0) {
-        throw new Error(`A user with email ${data.userData.email} already exists in this school`);
-      }
+    if (existingUser.length > 0) {
+      throw new Error(`A user with email ${data.userData.email} already exists in this school`);
+    }
 
-      // Generate a unique user ID for the student
-      const studentUserId = `student_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-      
-      // Create user first
-      const userResult = await tx
-        .insert(users)
-        .values({
-          ...data.userData,
-          id: studentUserId,
-        })
-        .returning();
-      
-      const user = userResult[0] as User;
-      
-      // Create student record
-      const studentResult = await tx
-        .insert(students)
-        .values({
-          ...data.studentData,
-          userId: user.id,
-        })
-        .returning();
-      
-      const student = studentResult[0] as Student;
-      
-      return { ...student, user };
-    });
+    // Generate a unique user ID for the student
+    const studentUserId = `student_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const studentId = `student_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+    // Use direct SQL to avoid Drizzle's UUID generation issues
+    await db.run(sql`
+      INSERT INTO users (id, email, first_name, last_name, role, school_id, status)
+      VALUES (${studentUserId}, ${data.userData.email}, ${data.userData.firstName},
+              ${data.userData.lastName}, ${data.userData.role}, ${data.userData.schoolId}, 'active')
+    `);
+
+    await db.run(sql`
+      INSERT INTO students (id, user_id, school_id, student_id, admission_date, gender, address, is_active)
+      VALUES (${studentId}, ${studentUserId}, ${data.studentData.schoolId}, ${data.studentData.studentId},
+              ${data.studentData.admissionDate?.toISOString() || null}, ${data.studentData.gender || null},
+              ${data.studentData.address || null}, 1)
+    `);
+
+    // Get the created records
+    const [user] = await db.select().from(users).where(eq(users.id, studentUserId));
+    const [student] = await db.select().from(students).where(eq(students.id, studentId));
+
+    return { ...student, user } as Student & { user: User };
   }
 
   async getStudent(id: string): Promise<Student | undefined> {
