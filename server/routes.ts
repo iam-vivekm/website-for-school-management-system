@@ -99,7 +99,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         passwordHash,
       };
 
-      const user = await storage.upsertUser(userData);
+      const user = await storage.createUserWithPassword(userData);
 
       // Set JWT cookies
       setAuthCookies(res, user);

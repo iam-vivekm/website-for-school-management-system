@@ -196,7 +196,12 @@ export class DatabaseStorage implements IStorage {
 
   // School operations
   async createSchool(schoolData: InsertSchool): Promise<School> {
-    const result = await db.insert(schools).values(schoolData).returning();
+    // For SQLite, we need to provide an ID manually
+    const schoolId = `school_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const result = await db.insert(schools).values({
+      ...schoolData,
+      id: schoolId,
+    }).returning();
     return result[0] as School;
   }
 

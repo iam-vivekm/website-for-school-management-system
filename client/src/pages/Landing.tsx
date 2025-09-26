@@ -22,37 +22,90 @@ export default function Landing() {
   });
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState('login');
-  const [showAuthModal, setShowAuthModal] = useState(false);
+
+  // School information sections
+  const aboutSchool = {
+    title: "Welcome to Excel Academy",
+    description: "Excel Academy is a premier educational institution committed to nurturing young minds and fostering academic excellence. Founded in 2010, we have been providing quality education to students from kindergarten through high school.",
+    vision: "To create a learning environment that inspires students to achieve their full potential and become responsible global citizens.",
+    mission: "To provide comprehensive education that combines academic rigor with character development, preparing students for success in an ever-changing world.",
+    stats: [
+      { label: "Students", value: "1200+" },
+      { label: "Teachers", value: "75+" },
+      { label: "Years of Excellence", value: "15+" },
+      { label: "Pass Rate", value: "96%" }
+    ]
+  };
+
+  const admissionInfo = {
+    title: "Admission Process",
+    process: [
+      "Online Application Submission",
+      "Document Verification",
+      "Entrance Assessment",
+      "Parent Interview",
+      "Final Admission Confirmation"
+    ],
+    requirements: [
+      "Birth Certificate",
+      "Previous School Records",
+      "Medical Certificate",
+      "Parent ID Proof",
+      "Recent Photographs"
+    ],
+    grades: ["Kindergarten", "Grade 1-12"],
+    fees: {
+      registration: "₹2,000",
+      admission: "₹10,000",
+      monthly: "₹3,500 - ₹5,500"
+    }
+  };
+
+  const resultsData = [
+    { name: "Priya Sharma", grade: "12th", percentage: 97.8, rank: 1 },
+    { name: "Rahul Kumar", grade: "12th", percentage: 96.5, rank: 2 },
+    { name: "Ananya Singh", grade: "12th", percentage: 95.2, rank: 3 },
+    { name: "Vikram Patel", grade: "10th", percentage: 94.8, rank: 1 },
+    { name: "Sneha Gupta", grade: "10th", percentage: 93.9, rank: 2 }
+  ];
+
+  const contactInfo = {
+    address: "Excel Academy, 456 Education Road, Knowledge City, India - 400001",
+    phone: ["+91 98765 43210", "+91 98765 43211"],
+    email: ["info@excelacademy.edu.in", "admissions@excelacademy.edu.in"],
+    hours: "Monday - Saturday: 8:00 AM - 6:00 PM"
+  };
+
   const features = [
     {
       icon: Users,
-      title: "Student & Teacher Management",
-      description: "Comprehensive profiles, enrollment tracking, and staff management with role-based access."
+      title: "Expert Faculty",
+      description: "Our experienced teachers provide personalized attention and mentorship to every student."
     },
     {
       icon: BookOpen,
-      title: "Academic Management",
-      description: "Class scheduling, grade management, and curriculum tracking in one integrated system."
+      title: "Modern Curriculum",
+      description: "CBSE affiliated curriculum with additional focus on STEM, arts, and sports education."
     },
     {
       icon: BarChart3,
-      title: "Attendance Tracking",
-      description: "Daily attendance monitoring with automated reports and parent notifications."
+      title: "Digital Learning",
+      description: "Smart classrooms, online resources, and interactive learning platforms."
     },
     {
       icon: DollarSign,
-      title: "Fee Management",
-      description: "Online payment processing, fee structure setup, and automated receipts."
+      title: "Affordable Education",
+      description: "Quality education at reasonable fees with various scholarship programs available."
     },
     {
       icon: Bell,
-      title: "Communication System", 
-      description: "School-wide announcements, parent notifications, and messaging system."
+      title: "Parent Portal",
+      description: "Real-time updates on student progress, attendance, and school announcements."
     },
     {
       icon: GraduationCap,
-      title: "Multi-School Support",
-      description: "Manage multiple school branches with custom branding and isolated data."
+      title: "Career Guidance",
+      description: "Professional counseling and career planning from grade 8 onwards."
     }
   ];
 
@@ -142,6 +195,222 @@ export default function Landing() {
               <div className="text-4xl font-bold text-blue-100 mb-2">24/7</div>
               <p className="text-blue-100">Support Available</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* About School Section */}
+      <section id="about" className="bg-gray-50 dark:bg-gray-800">
+        <div className="container mx-auto px-4 py-20">
+          <div className="text-center mb-16">
+            <h3 className="text-4xl font-bold text-gray-900 dark:text-white mb-6">
+              {aboutSchool.title}
+            </h3>
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto">
+              {aboutSchool.description}
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-12 mb-16">
+            <Card className="hover-elevate">
+              <CardHeader>
+                <CardTitle className="text-2xl text-blue-600">Our Vision</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600 dark:text-gray-300">{aboutSchool.vision}</p>
+              </CardContent>
+            </Card>
+
+            <Card className="hover-elevate">
+              <CardHeader>
+                <CardTitle className="text-2xl text-blue-600">Our Mission</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600 dark:text-gray-300">{aboutSchool.mission}</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid md:grid-cols-4 gap-8 text-center">
+            {aboutSchool.stats.map((stat, index) => (
+              <div key={index}>
+                <div className="text-4xl font-bold text-blue-600 mb-2">{stat.value}</div>
+                <p className="text-gray-600 dark:text-gray-300">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Admission Section */}
+      <section id="admission" className="container mx-auto px-4 py-20">
+        <div className="text-center mb-16">
+          <h3 className="text-4xl font-bold text-gray-900 dark:text-white mb-6">
+            {admissionInfo.title}
+          </h3>
+        </div>
+
+        <div className="grid lg:grid-cols-3 gap-8">
+          <Card className="hover-elevate">
+            <CardHeader>
+              <CardTitle className="text-xl">Admission Process</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ol className="space-y-2">
+                {admissionInfo.process.map((step, index) => (
+                  <li key={index} className="flex items-center">
+                    <span className="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm mr-3">
+                      {index + 1}
+                    </span>
+                    {step}
+                  </li>
+                ))}
+              </ol>
+            </CardContent>
+          </Card>
+
+          <Card className="hover-elevate">
+            <CardHeader>
+              <CardTitle className="text-xl">Requirements</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2">
+                {admissionInfo.requirements.map((req, index) => (
+                  <li key={index} className="flex items-center">
+                    <span className="text-blue-600 mr-2">•</span>
+                    {req}
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+
+          <Card className="hover-elevate">
+            <CardHeader>
+              <CardTitle className="text-xl">Fee Structure</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex justify-between">
+                <span>Registration Fee:</span>
+                <span className="font-semibold">{admissionInfo.fees.registration}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Admission Fee:</span>
+                <span className="font-semibold">{admissionInfo.fees.admission}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Monthly Tuition:</span>
+                <span className="font-semibold">{admissionInfo.fees.monthly}</span>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* Results Section */}
+      <section id="results" className="bg-blue-600 dark:bg-blue-900">
+        <div className="container mx-auto px-4 py-20">
+          <div className="text-center mb-16">
+            <h3 className="text-4xl font-bold text-white mb-6">
+              Academic Excellence
+            </h3>
+            <p className="text-xl text-blue-100 max-w-3xl mx-auto">
+              Our students consistently achieve outstanding results, demonstrating academic excellence and dedication to learning.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {resultsData.map((result, index) => (
+              <Card key={index} className="bg-white/10 border-white/20 text-white">
+                <CardHeader className="text-center">
+                  <div className="text-3xl font-bold text-yellow-300 mb-2">#{result.rank}</div>
+                  <CardTitle className="text-xl">{result.name}</CardTitle>
+                  <CardDescription className="text-blue-100">Grade {result.grade}</CardDescription>
+                </CardHeader>
+                <CardContent className="text-center">
+                  <div className="text-4xl font-bold text-white mb-2">{result.percentage}%</div>
+                  <div className="text-blue-100">Percentage</div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="bg-gray-50 dark:bg-gray-800">
+        <div className="container mx-auto px-4 py-20">
+          <div className="text-center mb-16">
+            <h3 className="text-4xl font-bold text-gray-900 dark:text-white mb-6">
+              Contact Information
+            </h3>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-12">
+            <Card className="hover-elevate">
+              <CardHeader>
+                <CardTitle className="text-2xl">Get in Touch</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <h4 className="font-semibold text-lg mb-2">Address</h4>
+                  <p className="text-gray-600 dark:text-gray-300">{contactInfo.address}</p>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-lg mb-2">Phone</h4>
+                  {contactInfo.phone.map((phone, index) => (
+                    <p key={index} className="text-gray-600 dark:text-gray-300">{phone}</p>
+                  ))}
+                </div>
+                <div>
+                  <h4 className="font-semibold text-lg mb-2">Email</h4>
+                  {contactInfo.email.map((email, index) => (
+                    <p key={index} className="text-gray-600 dark:text-gray-300">{email}</p>
+                  ))}
+                </div>
+                <div>
+                  <h4 className="font-semibold text-lg mb-2">Office Hours</h4>
+                  <p className="text-gray-600 dark:text-gray-300">{contactInfo.hours}</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="hover-elevate">
+              <CardHeader>
+                <CardTitle className="text-2xl">Quick Links</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="font-semibold text-lg mb-2">Admissions</h4>
+                    <p className="text-gray-600 dark:text-gray-300 mb-2">
+                      Ready to join Excel Academy? Start your admission process today.
+                    </p>
+                    <Button variant="outline" size="sm">
+                      Apply Now
+                    </Button>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-lg mb-2">Academic Calendar</h4>
+                    <p className="text-gray-600 dark:text-gray-300 mb-2">
+                      View important dates, holidays, and exam schedules.
+                    </p>
+                    <Button variant="outline" size="sm">
+                      View Calendar
+                    </Button>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-lg mb-2">Student Portal</h4>
+                    <p className="text-gray-600 dark:text-gray-300 mb-2">
+                      Access grades, assignments, and school resources.
+                    </p>
+                    <Button variant="outline" size="sm">
+                      Login Portal
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
