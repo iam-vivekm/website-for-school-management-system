@@ -45,6 +45,14 @@ export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
+  createUserWithPassword(userData: {
+    email: string;
+    firstName: string;
+    lastName: string;
+    role: string;
+    schoolId?: string;
+    passwordHash: string;
+  }): Promise<User>;
   
   // School operations
   createSchool(school: InsertSchool): Promise<School>;
@@ -157,6 +165,30 @@ export class DatabaseStorage implements IStorage {
           ...userData,
           updatedAt: new Date(),
         },
+      })
+      .returning();
+    return result[0] as User;
+  }
+
+  async createUserWithPassword(userData: {
+    email: string;
+    firstName: string;
+    lastName: string;
+    role: string;
+    schoolId?: string;
+    passwordHash: string;
+  }): Promise<User> {
+    const result = await db
+      .insert(users)
+      .values({
+        id: `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+        email: userData.email,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        role: userData.role,
+        schoolId: userData.schoolId,
+        passwordHash: userData.passwordHash,
+        status: 'active',
       })
       .returning();
     return result[0] as User;

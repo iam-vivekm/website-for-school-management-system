@@ -41,7 +41,7 @@ A comprehensive full-stack school management web application built with React, N
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/iam-vivekm/website-for-school-management-system.git
    cd website-for-school-management-system
    ```
 
@@ -51,25 +51,20 @@ A comprehensive full-stack school management web application built with React, N
    ```
 
 3. **Environment Setup**
-   Copy the `.env` file and update the values:
-   ```bash
-   cp .env.example .env
-   ```
-
-   Update the following variables in `.env`:
+   The `.env` file is already configured with:
    ```env
-   DATABASE_URL=postgresql://your-neon-connection-string
-   JWT_SECRET=your-super-secret-jwt-key-change-in-production
+   DATABASE_URL=postgresql://neondb_owner:your-connection-string
+   JWT_SECRET=your-super-secret-jwt-key-change-in-production-make-it-very-long-and-secure
    JWT_EXPIRES_IN=7d
    NODE_ENV=development
    ```
 
 4. **Database Setup**
    ```bash
-   # Push database schema
-   npm run db:push
+   # Create database tables
+   npm run db:setup
 
-   # Seed with sample data
+   # Seed with sample data (creates admin user with password 'admin123')
    npm run seed
    ```
 

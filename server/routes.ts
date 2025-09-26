@@ -1,6 +1,7 @@
 // Referenced from javascript_log_in_with_replit integration
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import bcrypt from "bcrypt";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { requireRoles, requirePermission, requireSchoolAccess, requireJsonContent } from "./middleware";
@@ -24,10 +25,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: 'Email and password are required' });
       }
 
-      // For now, we'll use a simple mock login since we don't have password hashing yet
-      // In production, you'd verify the password hash
+      // Get user by email
       const user = await storage.getUserByEmail(email);
-      if (!user) {
+      if (!user || !user.passwordHash) {
+        return res.status(401).json({ message: 'Invalid credentials' });
+      }
+
+      // Verify password
+      const isValidPassword = await bcrypt.compare(password, user.passwordHash);
+      if (!isValidPassword) {
         return res.status(401).json({ message: 'Invalid credentials' });
       }
 
@@ -64,6 +70,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(409).json({ message: 'User already exists' });
       }
 
+      // Hash password
+      const saltRounds = 10;
+      const passwordHash = await bcrypt.hash(password, saltRounds);
+
       let schoolId: string | undefined;
 
       // If creating a school admin, create the school first
@@ -77,7 +87,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         schoolId = school.id;
       }
 
-      // Create user
+      // Create user with password hash
       const userData = {
         id: `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         email,
@@ -86,6 +96,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         role,
         schoolId,
         status: 'active' as const,
+        passwordHash,
       };
 
       const user = await storage.upsertUser(userData);

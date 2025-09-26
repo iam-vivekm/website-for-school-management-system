@@ -132,6 +132,7 @@ users = pgTable("users", {
   role: userRoleEnum("role").notNull().default("student"),
   status: userStatusEnum("status").notNull().default("active"),
   schoolId: varchar("school_id").references(() => schools.id),
+  passwordHash: varchar("password_hash"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
