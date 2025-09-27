@@ -12,6 +12,7 @@ import Students from "@/pages/Students";
 import Teachers from "@/pages/Teachers";
 import Fees from "@/pages/Fees";
 import Admission from "@/pages/Admission";
+import Classes from "@/pages/Classes";
 import Landing from "@/pages/Landing";
 import About from "@/pages/About";
 import Results from "@/pages/Results";
@@ -24,11 +25,18 @@ function AuthenticatedRouter() {
   return (
     <Switch>
       <Route path="/" component={Dashboard} />
+      <Route path="/dashboard" component={Dashboard} />
       <Route path="/admission" component={Admission} />
       <Route path="/students" component={Students} />
       <Route path="/teachers" component={Teachers} />
+      <Route path="/classes" component={Classes} />
+      <Route path="/attendance" component={Dashboard} /> {/* TODO: Create Attendance page */}
+      <Route path="/academics" component={Dashboard} /> {/* TODO: Create Academics page */}
       <Route path="/fees" component={Fees} />
-      {/* Add more routes as needed */}
+      <Route path="/messages" component={Dashboard} /> {/* TODO: Create Messages page */}
+      <Route path="/reports" component={Dashboard} /> {/* TODO: Create Reports page */}
+      <Route path="/announcements" component={Dashboard} /> {/* TODO: Create Announcements page */}
+      <Route path="/settings" component={Dashboard} /> {/* TODO: Create Settings page */}
       <Route component={NotFound} />
     </Switch>
   );

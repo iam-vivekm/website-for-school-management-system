@@ -1,12 +1,12 @@
 import { sql } from "drizzle-orm";
 import { relations } from "drizzle-orm";
-import { 
-  pgTable, 
-  text, 
-  varchar, 
-  timestamp, 
-  boolean, 
-  integer, 
+import {
+  pgTable,
+  text,
+  varchar,
+  timestamp,
+  boolean,
+  integer,
   decimal,
   jsonb,
   index,
@@ -133,8 +133,8 @@ users = pgTable("users", {
   status: userStatusEnum("status").notNull().default("active"),
   schoolId: varchar("school_id").references(() => schools.id),
   passwordHash: varchar("password_hash"),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 // Schools table (multi-tenant)
@@ -156,8 +156,8 @@ schools = pgTable("schools", {
     working_days?: string[];
     time_zone?: string;
   }>(),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 // Students table
@@ -179,8 +179,8 @@ export const students = pgTable("students", {
   medicalInfo: text("medical_info"),
   documents: jsonb("documents").$type<string[]>(),
   isActive: boolean("is_active").default(true),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 // Teachers table
@@ -197,8 +197,8 @@ export const teachers = pgTable("teachers", {
   address: text("address"),
   emergencyContact: text("emergency_contact"),
   isActive: boolean("is_active").default(true),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 // Grades table
@@ -209,7 +209,7 @@ export const grades = pgTable("grades", {
   level: integer("level").notNull(), // 1, 2, 3, etc.
   description: text("description"),
   isActive: boolean("is_active").default(true),
-  createdAt: timestamp("created_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 // Sections table 
@@ -222,7 +222,7 @@ export const sections = pgTable("sections", {
   classTeacherId: varchar("class_teacher_id").references(() => teachers.id),
   room: varchar("room"),
   isActive: boolean("is_active").default(true),
-  createdAt: timestamp("created_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 // Subjects table
@@ -233,7 +233,7 @@ export const subjects = pgTable("subjects", {
   code: varchar("code").notNull(),
   description: text("description"),
   isActive: boolean("is_active").default(true),
-  createdAt: timestamp("created_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 // Classes table (combination of grade, section, subject, teacher)
@@ -246,7 +246,7 @@ export const classes = pgTable("classes", {
   teacherId: varchar("teacher_id").references(() => teachers.id).notNull(),
   schedule: jsonb("schedule").$type<{ day: string; start_time: string; end_time: string; }[]>(),
   isActive: boolean("is_active").default(true),
-  createdAt: timestamp("created_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 // Attendance table
@@ -259,7 +259,7 @@ export const attendance = pgTable("attendance", {
   status: attendanceStatusEnum("status").notNull(),
   markedBy: varchar("marked_by").references(() => users.id).notNull(),
   notes: text("notes"),
-  createdAt: timestamp("created_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 // Fee structures table
@@ -272,7 +272,7 @@ export const feeStructures = pgTable("fee_structures", {
   frequency: varchar("frequency").notNull(), // monthly, quarterly, yearly
   dueDate: integer("due_date"), // day of month for monthly fees
   isActive: boolean("is_active").default(true),
-  createdAt: timestamp("created_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 // Fee payments table
@@ -290,8 +290,8 @@ export const feePayments = pgTable("fee_payments", {
   transactionId: varchar("transaction_id"),
   receipt: varchar("receipt"),
   notes: text("notes"),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 // Announcements table
@@ -305,10 +305,10 @@ export const announcements = pgTable("announcements", {
   targetAudience: jsonb("target_audience").$type<string[]>(), // roles that can see this
   authorId: varchar("author_id").references(() => users.id).notNull(),
   isActive: boolean("is_active").default(true),
-  publishDate: timestamp("publish_date").defaultNow(),
+  publishDate: timestamp("publish_date").default(sql`CURRENT_TIMESTAMP`),
   expiryDate: timestamp("expiry_date"),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 // Library tables
@@ -328,8 +328,8 @@ export const books = pgTable("books", {
   coverImage: varchar("cover_image"),
   status: bookStatusEnum("status").notNull().default("available"),
   isActive: boolean("is_active").default(true),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 export const bookIssues = pgTable("book_issues", {
@@ -346,8 +346,8 @@ export const bookIssues = pgTable("book_issues", {
   fineAmount: decimal("fine_amount", { precision: 10, scale: 2 }).default("0"),
   finePaid: boolean("fine_paid").default(false),
   notes: text("notes"),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 // Transport tables
@@ -360,8 +360,8 @@ export const routes = pgTable("routes", {
   estimatedTime: integer("estimated_time"), // in minutes
   fare: decimal("fare", { precision: 10, scale: 2 }),
   isActive: boolean("is_active").default(true),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 export const vehicles = pgTable("vehicles", {
@@ -376,8 +376,8 @@ export const vehicles = pgTable("vehicles", {
   lastMaintenance: timestamp("last_maintenance"),
   nextMaintenance: timestamp("next_maintenance"),
   isActive: boolean("is_active").default(true),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 export const routeStops = pgTable("route_stops", {
@@ -390,7 +390,7 @@ export const routeStops = pgTable("route_stops", {
   dropTime: varchar("drop_time"), // HH:MM format
   order: integer("order").notNull(),
   isActive: boolean("is_active").default(true),
-  createdAt: timestamp("created_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 export const studentTransport = pgTable("student_transport", {
@@ -403,8 +403,8 @@ export const studentTransport = pgTable("student_transport", {
   startDate: timestamp("start_date").notNull(),
   endDate: timestamp("end_date"),
   isActive: boolean("is_active").default(true),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 // Timetable tables
@@ -417,7 +417,7 @@ export const periods = pgTable("periods", {
   duration: integer("duration").notNull(), // in minutes
   isBreak: boolean("is_break").default(false),
   isActive: boolean("is_active").default(true),
-  createdAt: timestamp("created_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 export const timetables = pgTable("timetables", {
@@ -432,7 +432,7 @@ export const timetables = pgTable("timetables", {
   room: varchar("room"),
   academicYear: varchar("academic_year"),
   isActive: boolean("is_active").default(true),
-  createdAt: timestamp("created_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 // Homework/Assignments tables
@@ -448,8 +448,8 @@ export const assignments = pgTable("assignments", {
   totalMarks: integer("total_marks"),
   status: assignmentStatusEnum("status").notNull().default("draft"),
   isActive: boolean("is_active").default(true),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 export const assignmentSubmissions = pgTable("assignment_submissions", {
@@ -463,8 +463,8 @@ export const assignmentSubmissions = pgTable("assignment_submissions", {
   feedback: text("feedback"),
   gradedBy: varchar("graded_by").references(() => users.id),
   gradedAt: timestamp("graded_at"),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 // Exams tables
@@ -486,8 +486,8 @@ export const exams = pgTable("exams", {
   status: examStatusEnum("status").notNull().default("scheduled"),
   instructions: text("instructions"),
   isActive: boolean("is_active").default(true),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 export const examResults = pgTable("exam_results", {
@@ -498,9 +498,9 @@ export const examResults = pgTable("exam_results", {
   grade: varchar("grade"),
   remarks: text("remarks"),
   enteredBy: varchar("entered_by").references(() => users.id).notNull(),
-  enteredAt: timestamp("entered_at").defaultNow(),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  enteredAt: timestamp("entered_at").default(sql`CURRENT_TIMESTAMP`),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 export const reportCards = pgTable("report_cards", {
@@ -514,10 +514,10 @@ export const reportCards = pgTable("report_cards", {
   attendancePercentage: decimal("attendance_percentage", { precision: 5, scale: 2 }),
   remarks: text("remarks"),
   generatedBy: varchar("generated_by").references(() => users.id).notNull(),
-  generatedAt: timestamp("generated_at").defaultNow(),
+  generatedAt: timestamp("generated_at").default(sql`CURRENT_TIMESTAMP`),
   isPublished: boolean("is_published").default(false),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 // Events/Calendar tables
@@ -542,8 +542,8 @@ export const events = pgTable("events", {
   }>(),
   attachments: jsonb("attachments").$type<string[]>(),
   isActive: boolean("is_active").default(true),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 export const holidays = pgTable("holidays", {
@@ -554,7 +554,7 @@ export const holidays = pgTable("holidays", {
   type: varchar("type").notNull(), // national, religious, school
   description: text("description"),
   isActive: boolean("is_active").default(true),
-  createdAt: timestamp("created_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 // Messaging tables
@@ -566,8 +566,8 @@ export const conversations = pgTable("conversations", {
   participants: jsonb("participants").$type<string[]>(), // user IDs
   createdBy: varchar("created_by").references(() => users.id).notNull(),
   isActive: boolean("is_active").default(true),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 export const messages = pgTable("messages", {
@@ -580,7 +580,7 @@ export const messages = pgTable("messages", {
   replyToId: varchar("reply_to_id").references(() => messages.id),
   isRead: boolean("is_read").default(false),
   readBy: jsonb("read_by").$type<string[]>(), // user IDs who have read this message
-  createdAt: timestamp("created_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 // Notifications tables
@@ -593,8 +593,8 @@ export const notificationTemplates = pgTable("notification_templates", {
   template: text("template").notNull(),
   variables: jsonb("variables").$type<string[]>(), // available variables for template
   isActive: boolean("is_active").default(true),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 export const notifications = pgTable("notifications", {
@@ -608,7 +608,7 @@ export const notifications = pgTable("notifications", {
   isRead: boolean("is_read").default(false),
   readAt: timestamp("read_at"),
   expiresAt: timestamp("expires_at"),
-  createdAt: timestamp("created_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 // Assets/Inventory tables
@@ -627,8 +627,8 @@ export const assets = pgTable("assets", {
   warrantyExpiry: timestamp("warranty_expiry"),
   notes: text("notes"),
   isActive: boolean("is_active").default(true),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 export const assetMaintenance = pgTable("asset_maintenance", {
@@ -641,7 +641,7 @@ export const assetMaintenance = pgTable("asset_maintenance", {
   performedBy: varchar("performed_by"),
   nextMaintenanceDate: timestamp("next_maintenance_date"),
   notes: text("notes"),
-  createdAt: timestamp("created_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 // Payroll tables
@@ -655,8 +655,8 @@ export const salaries = pgTable("salaries", {
   effectiveFrom: timestamp("effective_from").notNull(),
   effectiveTo: timestamp("effective_to"),
   isActive: boolean("is_active").default(true),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 export const salaryPayments = pgTable("salary_payments", {
@@ -671,8 +671,8 @@ export const salaryPayments = pgTable("salary_payments", {
   transactionId: varchar("transaction_id"),
   status: varchar("status").notNull().default("pending"), // pending, paid, cancelled
   processedBy: varchar("processed_by").references(() => users.id).notNull(),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 // Leave tables
@@ -690,8 +690,8 @@ export const leaveRequests = pgTable("leave_requests", {
   approvedAt: timestamp("approved_at"),
   rejectionReason: text("rejection_reason"),
   documents: jsonb("documents").$type<string[]>(),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`),
 });
 
 // Relations

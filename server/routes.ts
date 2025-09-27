@@ -81,6 +81,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const schoolData = insertSchoolSchema.parse({
           name: schoolName,
           email: email,
+          createdAt: new Date(),
+          updatedAt: new Date(),
           // Other school fields can be updated later
         });
         const school = await storage.createSchool(schoolData);
@@ -97,9 +99,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         schoolId,
         status: 'active' as const,
         passwordHash,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
-      const user = await storage.createUserWithPassword(userData);
+      const user = await storage.createUserWithPassword({
+        ...userData,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
 
       // Set JWT cookies
       setAuthCookies(res, user);

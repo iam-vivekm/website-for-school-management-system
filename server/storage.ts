@@ -178,6 +178,8 @@ export class DatabaseStorage implements IStorage {
     role: string;
     schoolId?: string;
     passwordHash: string;
+    createdAt?: Date;
+    updatedAt?: Date;
   }): Promise<User> {
     const result = await db
       .insert(users)
@@ -190,6 +192,8 @@ export class DatabaseStorage implements IStorage {
         schoolId: userData.schoolId,
         passwordHash: userData.passwordHash,
         status: 'active',
+        createdAt: userData.createdAt || new Date(),
+        updatedAt: userData.updatedAt || new Date(),
       })
       .returning();
     return result[0] as User;

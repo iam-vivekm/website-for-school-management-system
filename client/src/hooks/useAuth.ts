@@ -12,9 +12,15 @@ export function useAuth() {
 
   const loginMutation = useMutation({
     mutationFn: async (credentials: { email: string; password: string }) => {
-      return apiRequest('POST', '/api/auth/login', credentials);
+      const response = await apiRequest('POST', '/api/auth/login', credentials);
+      return await response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      // Set user data directly from login response
+      if (data && data.user) {
+        queryClient.setQueryData(['/api/auth/me'], data.user);
+      }
+      // Also invalidate to ensure fresh data
       queryClient.invalidateQueries({ queryKey: ['/api/auth/me'] });
     },
     onError: (error: any) => {
@@ -35,6 +41,8 @@ export function useAuth() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/auth/me'] });
+      // Redirect to dashboard after successful signup
+      window.location.href = '/dashboard';
     },
     onError: (error: any) => {
       console.error('Signup error:', error);
